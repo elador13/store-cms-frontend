@@ -4,8 +4,6 @@ import React from 'react'
 
 import { SITE_DESCRIPTION, SITE_NAME } from '@/constants/seo.constants'
 
-import { DarkModeProvider } from '@/hooks/useDarkMode'
-
 import './globals.scss'
 import { Providers } from './providers'
 

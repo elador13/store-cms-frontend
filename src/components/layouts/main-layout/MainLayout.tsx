@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, Suspense } from 'react'
 
 import styles from './MainLayout.module.scss'
 import { Footer } from './footer/Footer'

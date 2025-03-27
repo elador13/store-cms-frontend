@@ -1,5 +1,6 @@
 .wrapper {
-	@apply flex flex-col h-full;
+	@apply flex flex-col;
+	min-height: 100vh;
 
 	> .layout {
 		@apply flex-1;

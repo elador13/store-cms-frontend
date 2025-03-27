@@ -28,7 +28,7 @@ export function Auth() {
 		<div className={styles.wrapper}>
 			<div className={styles.left}>
 				<Image
-					src='/images/auth.svg'
+					src='/images/logo.svg'
 					alt='CMS store auth'
 					width={100}
 					height={100}

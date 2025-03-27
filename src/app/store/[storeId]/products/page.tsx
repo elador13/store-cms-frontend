@@ -9,6 +9,6 @@ export const metadata: Metadata = {
 	...NO_INDEX_PAGE
 }
 
-export default function ProductsPage() {
-	return <Products />
+export default function ProductsPage({params}: { params: { storeId: string } }) {
+	return <Products params={params}/>
 }

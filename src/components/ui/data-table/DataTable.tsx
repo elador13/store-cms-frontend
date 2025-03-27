@@ -23,20 +23,22 @@ import {
 import { Input } from '../form-elements/Input'
 
 import styles from './DataTable.module.scss'
+import { productColumns } from '@/app/store/[storeId]/products/ProductColumns'
 
 interface DataTableProps<TData, TValue> {
-	columns: ColumnDef<TData, TValue>[]
+
 	data: TData[]
 	filterKey?: string
 }
 
 export function DataTable<TData, TValue>({
-	columns,
 	data,
 	filterKey
 }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
+	const columns = productColumns as ColumnDef<TData, TValue>[];
 
 	const table = useReactTable({
 		data,

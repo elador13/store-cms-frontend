@@ -1,28 +1,40 @@
-'use client'
-
 import { Plus } from 'lucide-react'
+import { cookies } from 'next/headers'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
 
 import { Button } from '@/components/ui/Button'
 import { Heading } from '@/components/ui/Heading'
 import { DataTable } from '@/components/ui/data-table/DataTable'
-import DataTableLoading from '@/components/ui/data-table/DataTableLoading'
 
 import { STORE_URL } from '@/config/url.config'
 
-import { useGetProducts } from '@/hooks/queries/products/useGetProducts'
+import { IProduct } from '@/shared/types/product.interface'
 
 import { formatPrice } from '@/utils/string/format-price'
 
 import styles from '../Store.module.scss'
 
-import { IProductColumn, productColumns } from './ProductColumns'
+import { IProductColumn } from './ProductColumns'
 
-export function Products() {
-	const params = useParams<{ storeId: string }>()
+const fetchProducts = async (storeId: string): Promise<IProduct[]> => {
+	const cookieStore = cookies()
+	const accessToken = cookieStore.get('accessToken')?.value
 
-	const { products, isLoading } = useGetProducts()
+	const response = await fetch(
+		`http://localhost:5000/products/by-storeId/${storeId}`,
+		{
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${accessToken}`
+			}
+		}
+	)
+	return await response.json()
+}
+
+export async function Products({ params }: { params: { storeId: string } }) {
+	const products = await fetchProducts(params.storeId)
 
 	const formattedProducts: IProductColumn[] = products
 		? products.map(product => ({
@@ -37,35 +49,23 @@ export function Products() {
 
 	return (
 		<div className={styles.wrapper}>
-			{isLoading ? (
-				<DataTableLoading />
-			) : (
-				<>
-					<div className={styles.header}>
-						<Heading
-							title={`Products (${products?.length})`}
-							description='All products in your store'
-						/>
-						<div className={styles.buttons}>
-							<Link
-								href={STORE_URL.productCreate(params.storeId)}
-							>
-								<Button variant='primary'>
-									<Plus />
-									Create
-								</Button>
-							</Link>
-						</div>
-					</div>
-					<div className={styles.table}>
-						<DataTable
-							columns={productColumns}
-							data={formattedProducts}
-							filterKey='title'
-						/>
-					</div>
-				</>
-			)}
+			<div className={styles.header}>
+				<Heading
+					title={`Products (${products?.length})`}
+					description='All products in your store'
+				/>
+				<div className={styles.buttons}>
+					<Link href={STORE_URL.productCreate(params.storeId)}>
+						<Button variant='primary'>
+							<Plus />
+							Create
+						</Button>
+					</Link>
+				</div>
+			</div>
+			<div className={styles.table}>
+				<DataTable data={formattedProducts} filterKey='title' />
+			</div>
 		</div>
 	)
 }

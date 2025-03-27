@@ -10,14 +10,20 @@ export const metadata: Metadata = {
 
 export const revalidate = 60
 
-async function getProducts() {
-	const data = await productService.getAll()
+export default async function ExplorerPage({
+	searchParams
+}: {
+	searchParams: { searchTerm?: string }
+}) {
+	let products = await productService.getAll()
 
-	return data
-}
+	if (searchParams.searchTerm) {
+		products = products.filter(product =>
+			product.title
+				.toLowerCase()
+				.includes(searchParams?.searchTerm?.toLowerCase() || '')
+		)
+	}
 
-export default async function ExplorerPage() {
-	const data = await getProducts()
-
-	return <Explorer products={data} />
+	return <Explorer products={products} searchTerm={searchParams.searchTerm} />
 }
